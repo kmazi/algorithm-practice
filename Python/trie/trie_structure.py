@@ -20,8 +20,8 @@ class Trie:
         """Set root val for trie."""
         self.root = TrieNode()
 
-    def insert(self, word: str, index: int = 0, 
-               current_node: TrieNode=None) -> None:
+    def insert(self, current_node: TrieNode, word: str, 
+               index: int = 0) -> None:
         """Add word to trie structure."""
 
         current_node = current_node.children.setdefault(
@@ -32,9 +32,30 @@ class Trie:
         index += 1
 
         if index < len(word):
-            self.insert(word=word, index=index, current_node=current_node)
+            self.insert(current_node=current_node, word=word, index=index)
         else:
             current_node.word = True
+
+    def delete(self, current_node: TrieNode, word: str, index: int=0):
+        character = word[index]
+        next_node = current_node.children.get(character)
+        if next_node is None:
+            return False
+        
+        index += 1
+        if index < len(word):
+            self.delete(current_node=next_node, word=word, index=index)
+        elif index == len(word) and next_node.word:
+            next_node.word = False
+        else:
+            raise RecursionError('Not a word.')
+
+        if next_node.count > 1:
+            next_node.count -= 1
+        else:
+            del current_node.children[character]
+
+        return True
 
     def search(self, current_node: TrieNode, word: str, index: int=0, 
                prefix=True) -> bool:

@@ -36,7 +36,7 @@ if __name__ == "__main__":
     words = ['late', 'win', 'always', 'allwell', 'at', 'worse']
     trie = Trie()
     for word in words:
-        trie.insert(word=word)
+        trie.insert(current_node=trie.root, word=word)
 
     while True:
         print('Enter a search word:')
@@ -47,7 +47,7 @@ if __name__ == "__main__":
             print('Bye..')
             break
 
-        word_is_in_dictionary = trie.search(word=search_word, prefix=prefix)
+        word_is_in_dictionary = trie.search(current_node=trie.root, word=search_word, prefix=prefix)
         response = 'Yes' if word_is_in_dictionary else 'No'
         present = '' if word_is_in_dictionary else 'not '
         print(f'{response} the search word "{search_word}" is {present}in the dictionary.')
