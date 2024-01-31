@@ -10,6 +10,7 @@ class TrieNode:
         """Initialize node children."""
         self.children: Dict[str, 'TrieNode'] = {}
         self.word = False
+        self.count = 0
 
 
 class Trie:
@@ -19,36 +20,32 @@ class Trie:
         """Set root val for trie."""
         self.root = TrieNode()
 
-    def insert(self, word: str, index: int = 0) -> None:
+    def insert(self, word: str, index: int = 0, 
+               current_node: TrieNode=None) -> None:
         """Add word to trie structure."""
-        if index == 0:
-            self.current_node = self.root
 
-        self.current_node = self.current_node.children.setdefault(
+        current_node = current_node.children.setdefault(
             word[index], TrieNode())
+        # increase word count by 1
+        current_node.count += 1
 
         index += 1
 
         if index < len(word):
-            self.insert(word=word, index=index)
+            self.insert(word=word, index=index, current_node=current_node)
         else:
-            self.current_node.word = True
+            current_node.word = True
 
-    def search(self, word: str, index: int=0, prefix=True) -> bool:
+    def search(self, current_node: TrieNode, word: str, index: int=0, 
+               prefix=True) -> bool:
         """Search trie storage for word."""
-        if index == 0:
-            self.current_node = self.root
-
-        self.current_node = self.current_node.children.get(word[index])
+        current_node = current_node.children.get(word[index])
         index += 1
-        if self.current_node:
-            if index >= len(word):
-                if prefix or self.current_node.word:
-                    return True
-                else:
-                    return False
-                
-            else:
-                return self.search(word=word, index=index, prefix=prefix)
-        else:
+        if not current_node:
             return False
+        
+        if index < len(word):
+            return self.search(current_node=current_node, word=word, 
+                                index=index, prefix=prefix)
+        else:
+            return prefix or current_node.word
