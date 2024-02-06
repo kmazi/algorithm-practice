@@ -1,38 +1,39 @@
 """Execute any of the algorithms for testing purpose."""
 
-from linked_list.singly_linked_list import SinglyListNode, LinkedList
+from tkinter.tix import ListNoteBook
+from linked_list.singly_linked_list import LinkedList
 from tree.binary_tree import TreeNode
 from trie.trie_structure import Trie
 
-# if __name__ == '__main__':
-#     linked_list = LinkedList(root=ListNode(3))
+if __name__ == '__main__':
+    # Linkedlist test
+    linked_list = LinkedList(root=ListNoteBook(3))
 
-#     linked_list.add_node_iteration(3)
-#     linked_list.add_node_iteration(1)
-#     linked_list.add_node_iteration(4)
-#     linked_list.add_node_iteration(2)
-#     linked_list.add_node_iteration(5)
+    linked_list.add_node_iteration(3)
+    linked_list.add_node_iteration(1)
+    linked_list.add_node_iteration(4)
+    linked_list.add_node_iteration(2)
+    linked_list.add_node_iteration(5)
 
-#     print('Length of linked list is', linked_list.length_iteration())
-#     values = linked_list.display_all_nodes_iteration()
-#     print('Here are the values in your linkedlist')
-#     for v in values:
-#         print(v)
+    print('Length of linked list is', linked_list.length_iteration())
+    values = linked_list.display_all_nodes_iteration()
+    print('Here are the values in your linkedlist')
+    for v in values:
+        print(v)
 
-#     linked_list = LinkedList()
-#     linked_list.add_multiple_nodes_iteration([3,4,7,1,4])
+    linked_list = LinkedList()
+    linked_list.add_multiple_nodes_iteration([3,4,7,1,4])
 
-#     print('Length of linked list is', linked_list.length_iteration())
-#     values = linked_list.display_all_nodes_iteration()
-#     print('Here are the values in your linkedlist')
-#     for v in values:
-#         print(v)
+    print('Length of linked list is', linked_list.length_iteration())
+    values = linked_list.display_all_nodes_iteration()
+    print('Here are the values in your linkedlist')
+    for v in values:
+        print(v)
 
-#     print('Searching for 0')
-#     print(linked_list.search_nodes_recursion(0))
+    print('Searching for 0')
+    print(linked_list.search_nodes_recursion(0))
 
-
-if __name__ == "__main__":
+    # Trie test
     words = ['late', 'win', 'always', 'allwell', 'at', 'worse']
     trie = Trie()
     for word in words:

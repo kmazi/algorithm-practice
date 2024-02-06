@@ -89,6 +89,44 @@ class Trie:
             # return true if end of word is reached or word is a
             # prefix else false
             return prefix or current_node.word
+        
+    def word_break_search(self, current_node: TrieNode, word: str, 
+                          index: int=0) -> bool:
+        """Search dictionary for words built from input string."""
+        current_node = current_node.children.get(word[index])
+        # Return false when not doesn't exist in dictionary.
+        if current_node is None:
+            return False
+        
+        search_result = False
+        index += 1 # Increase index after fetching node value
+        # If word is reached, start searching for next character from root 
+        # node or continue searching for longer word.
+        if current_node.word:
+            if index < len(word):
+                path_a = self.word_break_search(current_node=self.root, 
+                                                word=word, index=index)
+                if path_a:
+                    search_result = path_a
+                else:
+                    path_b = self.word_break_search(
+                        current_node=current_node, word=word, index=index)
+                    search_result = path_b
+            else:
+                search_result = True
+        else:
+            # if node exist but word doesn't end there, continue searching 
+            # through the characters of the word till the end. If char end is
+            # reached and word doesn't end there then return False.
+
+            if index < len(word):
+                search_result = self.word_break_search(
+                    current_node=current_node, word=word, index=index)
+            else:
+                search_result = False
+
+        return search_result
+                
 
     def print_words(self, current_node: TrieNode, word: str = ''):
         """Print all words in storage."""
