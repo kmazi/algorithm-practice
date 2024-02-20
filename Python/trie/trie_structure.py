@@ -1,6 +1,6 @@
 """Define trie datastructure functionalities."""
 from __future__ import annotations
-from typing import Dict
+from typing import Dict, List
 
 
 class TrieNode:
@@ -143,3 +143,64 @@ class Trie:
                 # Call function again with next node if end of word is
                 # not reached yet.
                 self.print_words(node, word+character)
+
+
+class LongestPrefixTrie:
+    def __init__(self):
+        """Set root node to be TrieNode instance."""
+        self.root = TrieNode()
+
+    def insert(self, current_node: TrieNode, words: List[str], index=0, 
+               cha_index=0, common_prefix='') -> str:
+        """Insert words into trie node.
+
+        Arguments:
+        ---
+            current_node -- Current node to insert character. 
+
+            words -- A list of words to insert.
+
+            index -- Index of word currently being inserted.
+
+            cha_index -- Index of character in word being inserted.
+
+            common_prefix -- Common prefix in all words.
+        """
+        if index < len(words):
+            word = words[index]
+            character = word[cha_index]
+            # Get node representing character if exist or create new node
+            # for it and return the created node
+            current_node = current_node.children.setdefault(character, 
+                                                            TrieNode())
+            # Increase cha_index for adding the next character to the trie
+            # increase word count on node after adding character.
+            cha_index += 1
+            current_node.count += 1
+            # Add character to common prefix if words formed with it is 
+            # equal to the number of words so far. I.e all words seen
+            # uses that character as prefix
+            if current_node.count == index+1:
+                common_prefix += character
+
+            if cha_index < len(word):
+                common_prefix = self.insert(current_node, words, index, 
+                                            cha_index, common_prefix)
+            else:
+                index += 1
+                current_node.word = True
+                # Return common prefix after adding all words or when
+                # there's no common prefix. Continue adding words otherwise
+                if index == len(words) or len(common_prefix) == 0:
+                    return common_prefix
+
+                common_prefix = self.insert(self.root, words, index)
+        return common_prefix
+
+
+if __name__ == '__main__':
+    longest_common_prefix = LongestPrefixTrie()
+    words = ['salvation', 'salvory', 'salvage']
+    print('Longest common prefix is:', longest_common_prefix.insert(
+        longest_common_prefix.root, words))
+    # prints out: 'salv'

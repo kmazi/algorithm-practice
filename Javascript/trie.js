@@ -135,6 +135,56 @@ class Trie {
     }
 }
 
+// Longest common prefix Trie implementation
+class LongestCommonPrefixTrie {
+    constructor() {
+        this.root = new TrieNode();
+    }
+    /**
+     * 
+     * @param {TrieNode} currentNode the current node
+     * @param {Array} words list of words to insert
+     * @param {Int32} index index of word in words to insert
+     * @param {Int16} chaIndex index of character in word to insert
+     * @param {string} commonPrefix holds the common prefix
+     * @returns {String} the common prefix of all words in word array
+     */
+    insert(currentNode, words, index=0, chaIndex=0, commonPrefix='') {
+
+        if (index < words.length) {
+            const word = words[index];
+            const character = word[chaIndex++];
+            // Get node if already exist or insert new node in trie representing
+            // current character
+            let nextNode = currentNode.children.get(character);
+            if (nextNode === undefined) {
+                nextNode = currentNode.children.set(character, new TrieNode()).get(character);
+            }
+            // word count at any node should be same as number of words inserted.
+            // i.e. if i've inserted two words then those two words the nodes hold
+            // characters for two words then they are commo prefix
+            nextNode.count += 1;
+            if (nextNode.count === index+1) {
+                commonPrefix += character;
+            }
+            // insert character into word for dictionary
+            if (chaIndex < word.length) {
+                commonPrefix = this.insert(nextNode, words, index, chaIndex, commonPrefix);
+            } else {
+                nextNode.wordEnd = true;
+                index += 1;
+                if (words.length === index || commonPrefix.length === 0) {
+                    return commonPrefix;
+                }
+                // Insert next word in words list starting from trie root and empty common
+                // prefix
+                commonPrefix = this.insert(this.root, words, index)
+            }
+        }
+        return commonPrefix;
+    }
+}
+
 
 const trie = new Trie();
 const words = ['the', 'alaba', 'alabasta', 'albeit', 'alpine', 'a', 'ab', 'worse', 'always', 'allwell', 'alive', 'w'];
@@ -151,3 +201,8 @@ console.log('Searching for deleted w:', trie.search(trie.root, 'w', prefix=false
 
 console.log(trie.word_break_search(trie.root, 'thealabaworse'));
 console.log(trie.word_break_search(trie.root, 'alabpine'));
+
+///
+console.log('PRINTING LongestCommonPrefixTrie DETAILS.')
+const longest = new LongestCommonPrefixTrie();
+console.log('The longest common prefix is:', longest.insert(longest.root, ['alaba', 'alabasta', 'albeit', 'alpine']));
