@@ -2,8 +2,7 @@
 
 from tkinter.tix import ListNoteBook
 from linked_list.singly_linked_list import LinkedList
-from tree.binary_tree import TreeNode
-from trie.trie_structure import Trie
+from Python.tree.trie import Trie
 
 if __name__ == '__main__':
     # Linkedlist test
@@ -32,23 +31,3 @@ if __name__ == '__main__':
 
     print('Searching for 0')
     print(linked_list.search_nodes_recursion(0))
-
-    # Trie test
-    words = ['late', 'win', 'always', 'allwell', 'at', 'worse']
-    trie = Trie()
-    for word in words:
-        trie.insert(current_node=trie.root, word=word)
-
-    while True:
-        print('Enter a search word:')
-        search_word = input()
-        print('Do you want to search for full word?')
-        prefix = True if input().lower() == 'no' else False
-        if search_word == '.exit' or search_word == '':
-            print('Bye..')
-            break
-
-        word_is_in_dictionary = trie.search(current_node=trie.root, word=search_word, prefix=prefix)
-        response = 'Yes' if word_is_in_dictionary else 'No'
-        present = '' if word_is_in_dictionary else 'not '
-        print(f'{response} the search word "{search_word}" is {present}in the dictionary.')

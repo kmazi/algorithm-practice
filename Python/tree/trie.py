@@ -145,7 +145,7 @@ class Trie:
                 self.print_words(node, word+character)
 
 
-class LongestPrefixTrie:
+class LongestPrefixTrie(Trie):
     def __init__(self):
         """Set root node to be TrieNode instance."""
         self.root = TrieNode()
@@ -198,9 +198,90 @@ class LongestPrefixTrie:
         return common_prefix
 
 
+class SuffixTrie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, current_node: TrieNode, word: str, suff_index: int=0, 
+               cha_index: int=0, count=0) -> int:
+        """Insert characters of word into suffix trie.
+        Arguments:
+        ---
+            current_node -- The node to insert character node.
+
+            word -- word from which characters are inserted.
+
+            suffix_index -- The start index of a suffix for insertion.
+
+            cha_index -- Character position in suffix to insert in a node
+
+            count -- Number of distinct node seen so far.
+
+        Returns:
+            int -- Total number of distinct substrings of word.
+        """
+        position = suff_index + cha_index
+        length = len(word)
+        # index start from the begining of word to the end. after exploring
+        # suffix starting at index, the value moves by 1 until it gets to
+        # end of string.
+        if suff_index == length:
+            return count
+        if position < length:
+            # Position is the index of character to be added to a node.
+            # its the character index + the suffix index
+            character = word[position]
+            current_node = current_node.children.setdefault(character, 
+                                                            TrieNode())
+            current_node.count += 1
+            cha_index += 1
+            # if word count on a node is 1 then count it. The total number
+            # nodes in the trie represents the number of distinct substring
+            # in the word.
+            if current_node.count == 1:
+                count += 1
+            # Continue adding characters of current suffix
+            count = self.insert(current_node, word, suff_index, cha_index, 
+                                count)
+        else:
+            current_node.word = True
+            # Start adding another suffix
+            count = self.insert(self.root, word, suff_index+1, 0, count)
+
+        return count
+
+
 if __name__ == '__main__':
-    longest_common_prefix = LongestPrefixTrie()
+    # SuffixTrie Test
+    word = 'traction'
+    suffix_trie = SuffixTrie()
+    no_of_distrinct_substring = suffix_trie.insert(suffix_trie.root, word=word)
+    print(f'Number of distinct substring in word "{word} is {no_of_distrinct_substring}"', 
+          end='\n\n')
+
+    # Trie test
+    print('Trie Test', end='\n\n')
+    words = ['late', 'win', 'always', 'allwell', 'at', 'worse']
+    print('Words in Trie dictionary are:', words)
+    trie = Trie()
+    for word in words:
+        trie.insert(current_node=trie.root, word=word)
+
+    words_to_search = ['lat', 'always', 'win', 'att']
+    for word in words_to_search:
+        result = trie.search(trie.root, word, prefix=False)
+        response = 'Yes' if result else 'No'
+        present = '' if result else 'not '
+        print(f'{response} the search word "{word}" is {present}in the dictionary.')
+
+    # Prefix trie test
+    print('PrefixTrie tests', end='\n\n')
     words = ['salvation', 'salvory', 'salvage']
+    print('All words in the dictionary:')
+
+    longest_common_prefix = LongestPrefixTrie()
     print('Longest common prefix is:', longest_common_prefix.insert(
         longest_common_prefix.root, words))
+    longest_common_prefix.print_words(longest_common_prefix.root)
+    
     # prints out: 'salv'

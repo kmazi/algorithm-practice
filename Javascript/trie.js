@@ -186,13 +186,73 @@ class LongestCommonPrefixTrie {
 }
 
 
+class SuffixTriee {
+    constructor() {
+        this.root = new TrieNode();
+    }
+
+    /**
+     * 
+     * @param {TrieNode} currentNode The node to insert character
+     * @param {String} word word from which characters are inserted
+     * @param {Number} suffixIndex The start index of suffix 
+     * @param {Number} chaIndex Character position in suffix to be inserted
+     * @param {Number} count Number of distinct node seen so far
+     * @returns Number: Total number of distinct substrings
+     */
+    insert(currentNode, word, suffixIndex=0, chaIndex=0, count=0) {
+        const length = word.length;
+        const position = suffixIndex + chaIndex++;
+        // index start from the begining of word to the end. after exploring
+        // suffix starting at index, the value moves by 1 until it gets to
+        // end of string.
+        if (suffixIndex === length) return count;
+        if (position < length) {
+            // Position is the index of character to be added to a node.
+            // its the character index + the suffix index
+            const character = word[position];
+            let nextNode = currentNode.children.get(character);
+            if (nextNode === undefined) {
+                nextNode = currentNode.children.set(character, new TrieNode()).get(character)
+            }
+            nextNode.count += 1;
+            // if word count on a node is 1 then count it. The total number
+            // nodes in the trie represents the number of distinct substring
+            // in the word.
+            if (nextNode.count == 1) count += 1;
+            //Continue adding characters of current suffix
+            count = this.insert(nextNode, word, suffixIndex, chaIndex, count);
+        } else {
+            // Mark end of suffix and start adding another one.
+            currentNode.wordEnd = true;
+            suffixIndex += 1;
+            count = this.insert(this.root, word, suffixIndex, 0, count);
+        }
+        return count;
+    }
+}
+
+
+// Suffix trie inplementation test
+const word = 'ababanna';
+console.log('Get the distinct substrings of word:', word);
+const suffixTrie = new SuffixTriee();
+const count = suffixTrie.insert(suffixTrie.root, word, 0, 0, 0);
+console.log('Total number of distrinct substring is:', count);
+console.log('\n')
+
+// Test Trie implementation
+console.log('Testing word insertion and printing in Trie datastructure.')
 const trie = new Trie();
 const words = ['the', 'alaba', 'alabasta', 'albeit', 'alpine', 'a', 'ab', 'worse', 'always', 'allwell', 'alive', 'w'];
 words.forEach((word) => {
     trie.insertWord(trie.root, word);
 });
 
+// Test printing words in trie
+console.log('Here are the words in the Trie dictionary.')
 trie.printWords(trie.root);
+
 console.log('Searching for alarm:', trie.search(trie.root, 'alarm'));
 console.log('Searching for alaba:', trie.search(trie.root, 'alaba'));
 console.log('Searching for alab:', trie.search(trie.root, 'alab'));
@@ -202,7 +262,7 @@ console.log('Searching for deleted w:', trie.search(trie.root, 'w', prefix=false
 console.log(trie.word_break_search(trie.root, 'thealabaworse'));
 console.log(trie.word_break_search(trie.root, 'alabpine'));
 
-///
+/// Test printing longest common prefix
 console.log('PRINTING LongestCommonPrefixTrie DETAILS.')
 const longest = new LongestCommonPrefixTrie();
 console.log('The longest common prefix is:', longest.insert(longest.root, ['alaba', 'alabasta', 'albeit', 'alpine']));
