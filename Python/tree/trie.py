@@ -249,15 +249,42 @@ class SuffixTrie:
             count = self.insert(self.root, word, suff_index+1, 0, count)
 
         return count
+    
+    def print_all_substrings(self, current_node: TrieNode, word: str='', 
+                             substrings: List[str]=[]):
+        """Print all substrings in suffix trie.
+        
+        Arguments:
+        ---
+            currentNode -- The node being explored.
+
+            word -- word built from characters representing nodes
+            
+            substrings -- List of substrings from word
+            
+        Returns:
+        ---
+            List: Array of substrings.
+        """
+        for character, node in current_node.children.items():
+            # Append every character represented in every previous nodes
+            # to  the character of current node. Append word formed to 
+            # substring array.
+            substrings.append(word+character)
+            self.print_all_substrings(node, word+character, substrings)
+        return substrings;
 
 
 if __name__ == '__main__':
     # SuffixTrie Test
     word = 'traction'
     suffix_trie = SuffixTrie()
-    no_of_distrinct_substring = suffix_trie.insert(suffix_trie.root, word=word)
+    no_of_distrinct_substring = suffix_trie.insert(suffix_trie.root, 
+                                                   word=word)
     print(f'Number of distinct substring in word "{word} is {no_of_distrinct_substring}"', 
           end='\n\n')
+    print('Here are all the substrings:', 
+          suffix_trie.print_all_substrings(suffix_trie.root))
 
     # Trie test
     print('Trie Test', end='\n\n')

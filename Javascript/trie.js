@@ -230,6 +230,24 @@ class SuffixTriee {
         }
         return count;
     }
+
+    /**
+     * 
+     * @param {TrieNode} currentNode The node being explored.
+     * @param {String} word word built from characters representing nodes
+     * @param {Array} substrings List of substrings from word
+     * @returns Array of substrings.
+     */
+    printAllSubstrings(currentNode, word='', substrings=[]) {
+        currentNode.children.forEach((node, character) => {
+            // Append every character represented in every previous nodes
+            // to  the character of current node. Append word formed to 
+            // substring array.
+            substrings.push(word+character);
+            this.printAllSubstrings(node, word+character, substrings);
+        });
+        return substrings;
+    }
 }
 
 
@@ -239,6 +257,8 @@ console.log('Get the distinct substrings of word:', word);
 const suffixTrie = new SuffixTriee();
 const count = suffixTrie.insert(suffixTrie.root, word, 0, 0, 0);
 console.log('Total number of distrinct substring is:', count);
+console.log('Here are all the distinct substrings:', suffixTrie.printAllSubstrings(
+    suffixTrie.root))
 console.log('\n')
 
 // Test Trie implementation
